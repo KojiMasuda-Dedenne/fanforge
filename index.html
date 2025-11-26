@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fanforge Team Assembler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Fullscreen background (your art already has the big logo) -->
+  <div class="backdrop"></div>
+
+  <!-- Accessible text for screen readers, visually hidden -->
+  <h1 class="sr-only">Fanforge Team Assembler</h1>
+
+  <!-- Bottom news ticker -->
+  <footer class="news-bar">
+    <div class="news-label">NEWS</div>
+    <div class="news-window">
+      <div class="news-track">
+        <span class="news-text">Loading latest news…</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Load news.txt and put it in the ticker
+    (async () => {
+      try {
+        const response = await fetch("news.txt?cache=" + Date.now());
+        if (!response.ok) throw new Error("Network error");
+        let text = (await response.text()).trim();
+        if (!text) text = "No news yet. Stay tuned for more Fanforge updates.";
+
+        const track = document.querySelector(".news-track");
+        const base = document.createElement("span");
+        base.className = "news-text";
+        base.textContent = text + "   •   ";
+
+        // Duplicate the text a few times for a continuous loop
+        track.innerHTML = "";
+        for (let i = 0; i < 3; i++) {
+          track.appendChild(base.cloneNode(true));
+        }
+      } catch (e) {
+        const newsText = document.querySelector(".news-text");
+        if (newsText) {
+          newsText.textContent = "Unable to load news.txt – check the file in your repo.";
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
